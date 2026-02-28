@@ -27,16 +27,22 @@ public class JobWorker : BackgroundService
         var host = _configuration["RabbitMq:HostName"];
         var user = _configuration["RabbitMq:UserName"];
         var pass = _configuration["RabbitMq:Password"];
+        var port = int.Parse(_configuration["RabbitMq:Port"] ?? "5671");
+        var vhost = _configuration["RabbitMq:VirtualHost"] ?? "/";
 
         var factory = new ConnectionFactory()
         {
             HostName = host,
             UserName = user,
             Password = pass,
-            Port = int.Parse(_configuration["RabbitMq:Port"] ?? "5672"),
+            Port = port,
+            VirtualHost = vhost,
+            RequestedHeartbeat = TimeSpan.FromSeconds(30),
             Ssl = new SslOption
             {
-                Enabled = bool.Parse(_configuration["RabbitMq:Ssl:Enabled"] ?? "false")
+                Enabled = true,
+                ServerName = host,
+                Version = System.Security.Authentication.SslProtocols.Tls12
             }
         };
 
