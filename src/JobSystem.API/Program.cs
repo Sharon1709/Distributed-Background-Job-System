@@ -50,21 +50,13 @@ public class Program
                     name: "postgres",
                     timeout: TimeSpan.FromSeconds(5))
                 .AddRabbitMQ(
-                    sp =>
-                    {
-                        var host = builder.Configuration["RabbitMq:HostName"];
-                        var user = builder.Configuration["RabbitMq:UserName"];
-                        var pass = builder.Configuration["RabbitMq:Password"];
-
-                        return new RabbitMQ.Client.ConnectionFactory()
-                        {
-                            HostName = host,
-                            UserName = user,
-                            Password = pass
-                        }.CreateConnectionAsync();
-                    },
+                     $"amqp://{builder.Configuration["RabbitMq:UserName"]}:" +
+                    $"{builder.Configuration["RabbitMq:Password"]}@" +
+                    $"{builder.Configuration["RabbitMq:HostName"]}",
                     name: "rabbitmq",
                     timeout: TimeSpan.FromSeconds(5));
+             
+                    
 
             var app = builder.Build();
 
@@ -73,7 +65,7 @@ public class Program
                 var db = scope.ServiceProvider.GetRequiredService<JobDbContext>();
                 db.Database.Migrate();
             }
-
+            
             // Basic middleware pipeline
             app.UseSerilogRequestLogging();
 
