@@ -14,6 +14,7 @@ public class Program
     public static void Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
             .WriteTo.Console()
             .CreateLogger();
 
@@ -41,8 +42,28 @@ public class Program
 
             builder.Services.AddControllers();
 
-            // Optional but good practice
-            builder.Services.AddHealthChecks();
+
+            builder.Services.AddHealthChecks()
+                .AddNpgSql(
+                    builder.Configuration.GetConnectionString("Default"),
+                    name: "postgres",
+                    timeout: TimeSpan.FromSeconds(5))
+                .AddRabbitMQ(
+                    sp =>
+                    {
+                        var host = builder.Configuration["RabbitMq:HostName"];
+                        var user = builder.Configuration["RabbitMq:UserName"];
+                        var pass = builder.Configuration["RabbitMq:Password"];
+
+                        return new RabbitMQ.Client.ConnectionFactory()
+                        {
+                            HostName = host,
+                            UserName = user,
+                            Password = pass
+                        }.CreateConnectionAsync();
+                    },
+                    name: "rabbitmq",
+                    timeout: TimeSpan.FromSeconds(5));
 
             var app = builder.Build();
 
