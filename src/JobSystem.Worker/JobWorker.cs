@@ -32,7 +32,12 @@ public class JobWorker : BackgroundService
         {
             HostName = host,
             UserName = user,
-            Password = pass
+            Password = pass,
+            Port = int.Parse(_configuration["RabbitMq:Port"] ?? "5672"),
+            Ssl = new SslOption
+            {
+                Enabled = bool.Parse(_configuration["RabbitMq:Ssl:Enabled"] ?? "false")
+            }
         };
 
         while (!stoppingToken.IsCancellationRequested)
