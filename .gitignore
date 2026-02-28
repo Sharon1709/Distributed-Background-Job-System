@@ -4,6 +4,4 @@ obj/
 *.user
 *.suo
 *.log
-Dockerfile*
-docker-compose*
 .env
