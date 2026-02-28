@@ -3,6 +3,7 @@ using JobSystem.Application.Jobs;
 using JobSystem.Infrastructure.Messaging;
 using JobSystem.Infrastructure.Persistence;
 using JobSystem.Infrastructure.Repositories;
+using JobSystem.Worker;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -39,7 +40,7 @@ public class Program
             builder.Services.AddScoped<IJobRepository, JobRepository>();
             builder.Services.AddScoped<IJobQueue, RabbitMqJobQueue>();
             builder.Services.AddScoped<CreateJobHandler>();
-
+            builder.Services.AddHostedService<JobWorker>();
             builder.Services.AddControllers();
 
 

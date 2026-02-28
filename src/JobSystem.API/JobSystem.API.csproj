@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JobSystem.Application\JobSystem.Application.csproj" />
     <ProjectReference Include="..\JobSystem.Infrastructure\JobSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\JobSystem.Worker\JobSystem.Worker.csproj" />
   </ItemGroup>
 
 </Project>
